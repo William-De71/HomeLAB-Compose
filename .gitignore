@@ -11,6 +11,8 @@ matterbridge-data/
 mosquitto/data/
 mosquitto/log/
 mosquitto/config/passwd
+# Config Sync-in (contient les secrets)
+environment.yaml
 # … sauf les configs Mosquitto versionnées
 !domotique/mosquitto/config/
 !domotique/mosquitto/config/mosquitto.conf

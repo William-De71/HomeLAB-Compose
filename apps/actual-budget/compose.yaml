@@ -1,0 +1,11 @@
+services:
+  actual:
+    image: actualbudget/actual-server:${ACTUAL_TAG:-latest}
+    container_name: actual-budget
+    restart: unless-stopped
+    ports:
+      - "${ACTUAL_PORT:-5006}:5006"
+    volumes:
+      - ./data:/data
+    environment:
+      TZ: ${TZ:-Europe/Paris}

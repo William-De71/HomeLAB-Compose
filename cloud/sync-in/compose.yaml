@@ -1,0 +1,46 @@
+# Source : https://github.com/Sync-in/server/tree/main/docker
+services:
+  sync-in:
+    image: syncin/server:${SYNCIN_TAG:-2}
+    container_name: sync-in
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${SYNCIN_PORT:-8095}:8080"
+    volumes:
+      # Configuration (base, secrets) : copier environment.yaml.example
+      - ./environment.yaml:/app/environment/environment.yaml:ro
+      - ./data/files:/app/data
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      PUID: ${PUID:-8888}
+      PGID: ${PGID:-8888}
+      # Création du compte admin au premier lancement (voir README)
+      INIT_ADMIN: ${INIT_ADMIN:-}
+      INIT_ADMIN_LOGIN: ${INIT_ADMIN_LOGIN:-}
+      INIT_ADMIN_PASSWORD: ${INIT_ADMIN_PASSWORD:-}
+
+  db:
+    image: mariadb:${MARIADB_TAG:-11}
+    container_name: sync-in-db
+    restart: unless-stopped
+    command:
+      - --innodb_ft_cache_size=16000000
+      - --max-allowed-packet=1G
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_uca1400_ai_ci
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: sync_in
+      MARIADB_USER: sync_in
+      MARIADB_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?definissez DB_ROOT_PASSWORD dans .env}

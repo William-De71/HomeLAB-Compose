@@ -1,0 +1,23 @@
+services:
+  ntfy:
+    image: binwiederhier/ntfy:${NTFY_TAG:-latest}
+    container_name: ntfy
+    restart: unless-stopped
+    command: serve
+    ports:
+      - "${NTFY_PORT:-8097}:80"
+    volumes:
+      - ./data/cache:/var/cache/ntfy
+      - ./data/lib:/var/lib/ntfy
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      NTFY_BASE_URL: ${NTFY_BASE_URL:?definissez NTFY_BASE_URL dans .env}
+      NTFY_CACHE_FILE: /var/cache/ntfy/cache.db
+      NTFY_ATTACHMENT_CACHE_DIR: /var/cache/ntfy/attachments
+      # Comptes obligatoires : rien n'est lisible ni publiable sans identifiant
+      NTFY_AUTH_FILE: /var/lib/ntfy/user.db
+      NTFY_AUTH_DEFAULT_ACCESS: ${NTFY_AUTH_DEFAULT_ACCESS:-deny-all}
+      NTFY_ENABLE_LOGIN: "true"
+      NTFY_BEHIND_PROXY: ${NTFY_BEHIND_PROXY:-false}
+      # Notifications instantanées sur iOS (relais par ntfy.sh, contenu non transmis)
+      NTFY_UPSTREAM_BASE_URL: ${NTFY_UPSTREAM_BASE_URL:-https://ntfy.sh}

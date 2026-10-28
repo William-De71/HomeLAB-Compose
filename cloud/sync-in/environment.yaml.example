@@ -1,0 +1,17 @@
+server:
+  # URL publique, ex. https://sync-in.domaine.fr (deviendra obligatoire)
+  publicUrl:
+mysql:
+  # Même mot de passe que DB_PASSWORD dans .env
+  url: 'mysql://sync_in:changeme@db:3306/sync_in'
+auth:
+  # Chiffre les secrets MFA. Ne plus le changer une fois la MFA activée.
+  # openssl rand -hex 32
+  encryptionKey:
+  token:
+    access:
+      # Obligatoire : openssl rand -hex 32
+      secret:
+    refresh:
+      # Obligatoire, différent du précédent : openssl rand -hex 32
+      secret:

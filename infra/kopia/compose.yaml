@@ -1,0 +1,29 @@
+services:
+  kopia:
+    image: kopia/kopia:${KOPIA_TAG:-latest}
+    container_name: kopia
+    hostname: ${KOPIA_HOSTNAME:-homelab}
+    restart: unless-stopped
+    ports:
+      - "${KOPIA_PORT:-51515}:51515"
+    command:
+      - server
+      - start
+      - --insecure
+      - --disable-csrf-token-checks
+      - --address=0.0.0.0:51515
+      - --server-username=${KOPIA_UI_USER:-admin}
+      - --server-password=${KOPIA_UI_PASSWORD:?definissez KOPIA_UI_PASSWORD dans .env}
+    volumes:
+      - ./data/config:/app/config
+      - ./data/cache:/app/cache
+      - ./data/logs:/app/logs
+      # Ce qui est sauvegardé, en lecture seule
+      - ${BACKUP_SOURCE:?definissez BACKUP_SOURCE dans .env}:/data:ro
+      # Dépôt local (inutile si le dépôt est distant : S3, B2, SFTP…)
+      - ${KOPIA_REPOSITORY:-./data/repository}:/repository
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      USER: ${KOPIA_UI_USER:-admin}
+      # Mot de passe de chiffrement du dépôt : le perdre = perdre les sauvegardes
+      KOPIA_PASSWORD: ${KOPIA_PASSWORD:?definissez KOPIA_PASSWORD dans .env}

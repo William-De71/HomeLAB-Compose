@@ -1,0 +1,31 @@
+services:
+  joplin:
+    image: joplin/server:${JOPLIN_TAG:-latest}
+    container_name: joplin
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "${JOPLIN_PORT:-22300}:22300"
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      APP_PORT: "22300"
+      # URL exacte utilisée par les clients Joplin (avec le port)
+      APP_BASE_URL: ${APP_BASE_URL:?definissez APP_BASE_URL dans .env}
+      DB_CLIENT: pg
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_DATABASE: joplin
+      POSTGRES_USER: joplin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
+
+  db:
+    image: postgres:${POSTGRES_TAG:-16-alpine}
+    container_name: joplin-db
+    restart: unless-stopped
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: joplin
+      POSTGRES_USER: joplin
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}

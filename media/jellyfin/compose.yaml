@@ -1,0 +1,21 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:${JELLYFIN_TAG:-latest}
+    container_name: jellyfin
+    restart: unless-stopped
+    user: ${PUID:-1000}:${PGID:-1000}
+    ports:
+      - "${JELLYFIN_PORT:-8096}:8096"
+    volumes:
+      - ./config:/config
+      - ./data/cache:/cache
+      # Bibliothèque, en lecture seule
+      - ${MEDIA_DIR:?definissez MEDIA_DIR dans .env}:/media:ro
+    # Transcodage matériel (GPU Intel / AMD) : décommenter
+    # devices:
+    #   - /dev/dri/renderD128:/dev/dri/renderD128
+    # group_add:
+    #   - "105"   # GID du groupe render : getent group render | cut -d: -f3
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      JELLYFIN_PublishedServerUrl: ${JELLYFIN_URL:-}

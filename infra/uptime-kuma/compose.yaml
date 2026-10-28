@@ -1,0 +1,11 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma:${UPTIME_KUMA_TAG:-2}
+    container_name: uptime-kuma
+    restart: unless-stopped
+    ports:
+      - "${UPTIME_KUMA_PORT:-3004}:3001"
+    volumes:
+      - ./data:/app/data
+    environment:
+      TZ: ${TZ:-Europe/Paris}

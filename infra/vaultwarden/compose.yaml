@@ -1,0 +1,16 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:${VAULTWARDEN_TAG:-latest}
+    container_name: vaultwarden
+    restart: unless-stopped
+    ports:
+      - "${VAULTWARDEN_PORT:-8222}:80"
+    volumes:
+      - ./data:/data
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      # URL HTTPS publique, obligatoire pour l'interface web et les clients
+      DOMAIN: ${DOMAIN:?definissez DOMAIN dans .env}
+      SIGNUPS_ALLOWED: ${SIGNUPS_ALLOWED:-true}
+      # Page /admin désactivée si vide
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-}

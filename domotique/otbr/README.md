@@ -20,4 +20,4 @@ docker compose up -d
 - API REST : `http://<ip-hôte>:8081` (intégration OTBR de Home Assistant).
 - Données du réseau Thread : `./data` — **à sauvegarder**, elles contiennent les
   identifiants du réseau.
-- Avec Gladys Assistant, voir `matter-thread/matter-server` pour le contrôleur Matter.
+- Avec Gladys Assistant, voir `domotique/matter-server` pour le contrôleur Matter.

@@ -1,0 +1,17 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage:${HOMEPAGE_TAG:-latest}
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - "${HOMEPAGE_PORT:-3006}:3000"
+    volumes:
+      - ./config:/app/config
+      # Optionnel : état des conteneurs dans les tuiles
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      # Adresses (avec port) depuis lesquelles la page est ouverte
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_ALLOWED_HOSTS:?definissez HOMEPAGE_ALLOWED_HOSTS dans .env}
+      PUID: ${PUID:-1000}
+      PGID: ${PGID:-1000}

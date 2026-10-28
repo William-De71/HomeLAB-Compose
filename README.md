@@ -30,9 +30,25 @@ dans un volume Docker nommé : voir le README de chaque service.
 | Matterbridge | [`domotique/matterbridge`](domotique/matterbridge) | `:8283` | host |
 | Node-RED | [`domotique/node-red`](domotique/node-red) | `:1880` | bridge |
 | n8n | [`domotique/n8n`](domotique/n8n) | `:5678` | bridge |
-| OpenThread Border Router | [`matter-thread/otbr`](matter-thread/otbr) | REST `:8081` | host |
-| Matter Server | [`matter-thread/matter-server`](matter-thread/matter-server) | WS `:5580` | host |
+| InfluxDB + Grafana | [`domotique/influxdb-grafana`](domotique/influxdb-grafana) | `:8086`, Grafana `:3003` | bridge |
+| Frigate | [`domotique/frigate`](domotique/frigate) | `:8971`, RTSP `:8554`, WebRTC `:8555` | bridge |
+| OpenThread Border Router | [`domotique/otbr`](domotique/otbr) | REST `:8081` | host |
+| Matter Server | [`domotique/matter-server`](domotique/matter-server) | WS `:5580` | host |
 | Nextcloud | [`cloud/nextcloud`](cloud/nextcloud) | `:8090` | bridge |
+| Sync-in | [`cloud/sync-in`](cloud/sync-in) | `:8095` | bridge |
+| Joplin Server | [`cloud/joplin`](cloud/joplin) | `:22300` | bridge |
+| Paperless-ngx | [`cloud/paperless-ngx`](cloud/paperless-ngx) | `:8000` | bridge |
+| Kopia (sauvegardes) | [`infra/kopia`](infra/kopia) | `:51515` | bridge |
+| Uptime Kuma | [`infra/uptime-kuma`](infra/uptime-kuma) | `:3004` | bridge |
+| Vaultwarden | [`infra/vaultwarden`](infra/vaultwarden) | `:8222` (HTTPS requis) | bridge |
+| AdGuard Home | [`infra/adguard-home`](infra/adguard-home) | DNS `:53`, `:3005` | bridge |
+| Homepage | [`infra/homepage`](infra/homepage) | `:3006` | bridge |
+| wg-easy (VPN WireGuard) | [`infra/wg-easy`](infra/wg-easy) | VPN UDP `:51820`, `:51821` | bridge |
+| ntfy | [`infra/ntfy`](infra/ntfy) | `:8097` | bridge |
+| Immich | [`media/immich`](media/immich) | `:2283` | bridge |
+| Jellyfin | [`media/jellyfin`](media/jellyfin) | `:8096` | bridge |
+| Mealie | [`apps/mealie`](apps/mealie) | `:9925` | bridge |
+| Actual Budget | [`apps/actual-budget`](apps/actual-budget) | `:5006` (HTTPS requis) | bridge |
 | Kalendra | [`perso/kalendra`](perso/kalendra) | `:5232` | bridge |
 | Projectory | [`perso/projectory`](perso/projectory) | `:3001` | bridge |
 | JewelBox Music Library | [`perso/jewelbox`](perso/jewelbox) | `:3002` | bridge |

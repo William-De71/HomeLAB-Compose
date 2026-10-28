@@ -1,0 +1,15 @@
+services:
+  adguard-home:
+    image: adguard/adguardhome:${ADGUARD_TAG:-latest}
+    container_name: adguard-home
+    restart: unless-stopped
+    ports:
+      - "${ADGUARD_DNS_BIND:-0.0.0.0}:53:53/tcp"
+      - "${ADGUARD_DNS_BIND:-0.0.0.0}:53:53/udp"
+      # Assistant d'installation puis interface d'administration
+      - "${ADGUARD_PORT:-3005}:3000"
+    volumes:
+      - ./data/work:/opt/adguardhome/work
+      - ./data/conf:/opt/adguardhome/conf
+    environment:
+      TZ: ${TZ:-Europe/Paris}
