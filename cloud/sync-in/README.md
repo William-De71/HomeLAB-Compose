@@ -22,3 +22,11 @@ INIT_ADMIN=true INIT_ADMIN_LOGIN=admin INIT_ADMIN_PASSWORD='motdepasse' docker c
 
 Recouvre en grande partie Nextcloud (fichiers, partage, synchro) : inutile
 d'avoir les deux, sauf pour les comparer.
+
+Sauvegarde de la base : le conteneur `db-dump` en écrit une copie cohérente
+chaque jour dans `./data/dumps` (conservée `DUMP_KEEP_DAYS` jours), que Kopia
+sauvegarde avec le reste. Restauration :
+
+```bash
+gunzip -c data/dumps/sync_in-AAAA-MM-JJ.sql.gz | docker compose exec -T db-dump mariadb -h db -u sync_in sync_in
+```

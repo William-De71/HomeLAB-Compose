@@ -25,11 +25,13 @@ Un certificat par machine du homelab, valable pour toutes ses adresses :
 
 ```bash
 mkcert -cert-file cert.pem -key-file key.pem \
-  192.168.1.10 homelab homelab.local localhost 127.0.0.1
+  192.168.1.10 homelab.internal "*.homelab.internal" localhost 127.0.0.1
 ```
 
-Remplacer `192.168.1.10` par l'IP de l'hôte (fixée dans le DHCP de la box) et
-ajouter les noms par lesquels on y accède. `localhost` sert aux vérifications
+Remplacer `192.168.1.10` par l'IP de l'hôte (fixée dans le DHCP de la box).
+`*.homelab.internal` couvre tous les noms locaux définis dans AdGuard Home
+(`vault.homelab.internal`…, voir
+[infra/adguard-home](../infra/adguard-home/README.md#noms-locaux)). `localhost` sert aux vérifications
 de santé internes des conteneurs (Vaultwarden).
 
 Puis, dans le dossier de chaque service qui en a besoin :

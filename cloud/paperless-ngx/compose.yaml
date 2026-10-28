@@ -38,6 +38,40 @@ services:
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
 
+  # Dump quotidien de la base dans ./data/dumps, lu par Kopia (infra/kopia).
+  # Restauration : voir README.
+  db-dump:
+    image: postgres:${POSTGRES_TAG:-16-alpine}
+    container_name: paperless-db-dump
+    restart: unless-stopped
+    depends_on:
+      - db
+    volumes:
+      - ./data/dumps:/dumps
+    environment:
+      PGHOST: db
+      PGUSER: paperless
+      PGDATABASE: paperless
+      PGPASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
+      KEEP_DAYS: ${DUMP_KEEP_DAYS:-7}
+    entrypoint:
+      - sh
+      - -c
+      - |
+        sleep 60
+        while true; do
+          f=/dumps/paperless-$$(date +%F).dump
+          if pg_dump -Fc -f "$$f.tmp" && mv "$$f.tmp" "$$f"; then
+            echo "dump OK : $$f"
+            find /dumps -name '*.dump' -mtime +$$KEEP_DAYS -delete
+            sleep 86400
+          else
+            echo "échec du dump, nouvel essai dans 1 h"
+            rm -f "$$f.tmp"
+            sleep 3600
+          fi
+        done
+
   broker:
     image: redis:${REDIS_TAG:-7-alpine}
     container_name: paperless-redis

@@ -44,3 +44,35 @@ services:
       MARIADB_USER: sync_in
       MARIADB_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?definissez DB_ROOT_PASSWORD dans .env}
+
+  # Dump quotidien de la base dans ./data/dumps, lu par Kopia (infra/kopia).
+  # Restauration : voir README.
+  db-dump:
+    image: mariadb:${MARIADB_TAG:-11}
+    container_name: sync-in-db-dump
+    restart: unless-stopped
+    depends_on:
+      - db
+    volumes:
+      - ./data/dumps:/dumps
+    environment:
+      MYSQL_PWD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
+      KEEP_DAYS: ${DUMP_KEEP_DAYS:-7}
+    entrypoint:
+      - bash
+      - -c
+      - |
+        set -o pipefail
+        sleep 60
+        while true; do
+          f=/dumps/sync_in-$$(date +%F).sql.gz
+          if mariadb-dump -h db -u sync_in --single-transaction sync_in | gzip > "$$f.tmp" && mv "$$f.tmp" "$$f"; then
+            echo "dump OK : $$f"
+            find /dumps -name '*.sql.gz' -mtime +$$KEEP_DAYS -delete
+            sleep 86400
+          else
+            echo "échec du dump, nouvel essai dans 1 h"
+            rm -f "$$f.tmp"
+            sleep 3600
+          fi
+        done

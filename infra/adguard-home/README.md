@@ -27,4 +27,31 @@ résolveur local de systemd-resolved. Au choix :
   ```
 
 Mettre un second DNS (celui de la box) en secours évite de couper Internet
-quand l'hôte est éteint, au prix de quelques publicités qui passent.
+quand l'hôte est éteint, au prix de quelques publicités qui passent. Les
+appareils interrogent parfois ce second DNS même quand AdGuard répond : les
+noms locaux ci-dessous peuvent alors échouer de temps en temps.
+
+## Noms locaux
+
+Pour ouvrir les services par un nom plutôt que par l'IP : Filtres →
+**Réécritures DNS** → Ajouter :
+
+| Domaine | Réponse |
+|---|---|
+| `homelab.internal` | `192.168.1.10` |
+| `*.homelab.internal` | `192.168.1.10` |
+
+Tout nom en `.homelab.internal` pointe alors vers l'hôte, sans rien ajouter par
+service : `http://nextcloud.homelab.internal:8090`,
+`https://vault.homelab.internal:8222`…
+
+- `.internal` est réservé aux réseaux privés (ICANN, 2024) : aucun risque de
+  collision avec un vrai domaine. Éviter `.local`, utilisé par mDNS.
+- Le port reste dans l'adresse : le nom remplace l'IP, pas le port.
+- Certains services n'acceptent que les adresses déclarées : ajouter le nom à
+  `NEXTCLOUD_TRUSTED_DOMAINS` (Nextcloud), `HOMEPAGE_ALLOWED_HOSTS` (Homepage),
+  `DOMAIN` (Vaultwarden)…
+- Les noms marchent aussi depuis l'extérieur via wg-easy, si son DNS est l'IP
+  de l'hôte (voir `infra/wg-easy`).
+- Pour les services en HTTPS, ajouter ces noms au certificat mkcert
+  ([docs/https-local.md](../../docs/https-local.md)).

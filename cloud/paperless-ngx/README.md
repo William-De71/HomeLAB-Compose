@@ -15,3 +15,11 @@ docker compose up -d
 - Données : `./data/media` (documents), `./data/data` (index, réglages),
   `./data/db` (base). Export complet :
   `docker compose exec paperless document_exporter ../export`.
+
+Sauvegarde de la base : le conteneur `db-dump` en écrit une copie cohérente
+chaque jour dans `./data/dumps` (conservée `DUMP_KEEP_DAYS` jours), que Kopia
+sauvegarde avec le reste. Restauration :
+
+```bash
+docker compose exec -T db-dump pg_restore --clean --if-exists -d paperless < data/dumps/paperless-AAAA-MM-JJ.dump
+```

@@ -14,6 +14,9 @@ docker compose up -d
   activer la sauvegarde. Hors du réseau local : via wg-easy.
 - Données : `UPLOAD_LOCATION` (photos) et `DB_DATA_LOCATION` (base) — **à
   sauvegarder toutes les deux** ; la base contient albums, visages, métadonnées.
+- Immich fait lui-même un dump quotidien de sa base dans
+  `UPLOAD_LOCATION/backups` (14 conservés, réglable dans Administration →
+  Paramètres) : il est sauvegardé avec les photos.
 - La base est ici une image spéciale d'Immich (extensions vectorielles) : ne pas
   la remplacer par un PostgreSQL standard.
 - Mises à jour : lire les [notes de version](https://github.com/immich-app/immich/releases)

@@ -7,6 +7,7 @@
 **Mes fichiers Docker Compose, prêts à copier.**<br>
 Un dossier = un service autonome : `compose.yaml` + `.env.example` + `README.md`.
 
+[![Vérification](https://github.com/William-De71/HomeLAB-Compose/actions/workflows/check-compose.yml/badge.svg)](https://github.com/William-De71/HomeLAB-Compose/actions/workflows/check-compose.yml)
 [![Docker Compose](https://img.shields.io/badge/Docker_Compose-v2-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
 [![Services](https://img.shields.io/badge/services-30-success)](#services)
 [![Licence](https://img.shields.io/github/license/William-De71/HomeLAB-Compose)](LICENSE)
@@ -42,6 +43,10 @@ docker compose up -d
   volume Docker nommé. Le README de chaque service précise quoi sauvegarder.
 - **Mises à jour** : `docker compose pull && docker compose up -d`. Chaque image
   a sa variable `*_TAG` dans `.env` pour figer une version.
+- **Sauvegardes** : [Kopia](infra/kopia). Les services avec une base
+  PostgreSQL/MariaDB en écrivent un dump quotidien dans `data/dumps`.
+- **Noms locaux** : `*.homelab.internal` via les réécritures DNS
+  d'[AdGuard Home](infra/adguard-home/README.md#noms-locaux).
 
 ## Services
 
@@ -131,6 +136,9 @@ les autres).
 3. Choisir un port libre (voir les tableaux ci-dessus).
 4. Ajouter une ligne dans la bonne catégorie et mettre à jour le badge
    « services ». Icônes : [dashboard-icons](https://dashboardicons.com/).
+5. Lancer `scripts/check-compose.sh` (docker + jq) : il vérifie les fichiers
+   présents, la validité de chaque compose et les conflits de ports. La même
+   vérification tourne sur GitHub à chaque push.
 
 ## Historique
 
