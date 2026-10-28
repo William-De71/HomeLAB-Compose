@@ -1,7 +1,26 @@
+<div align="center">
+
+<img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/docker.svg" width="80" alt="">
+
 # HomeLAB-Compose
 
-Mes fichiers Docker Compose, prêts à copier. Un dossier = un service autonome :
-`compose.yaml` + `.env.example` + `README.md`.
+**Mes fichiers Docker Compose, prêts à copier.**<br>
+Un dossier = un service autonome : `compose.yaml` + `.env.example` + `README.md`.
+
+[![Docker Compose](https://img.shields.io/badge/Docker_Compose-v2-2496ED?logo=docker&logoColor=white)](https://docs.docker.com/compose/)
+[![Services](https://img.shields.io/badge/services-30-success)](#services)
+[![Licence](https://img.shields.io/github/license/William-De71/HomeLAB-Compose)](LICENSE)
+[![Dernier commit](https://img.shields.io/github/last-commit/William-De71/HomeLAB-Compose)](https://github.com/William-De71/HomeLAB-Compose/commits/main)
+[![Stars](https://img.shields.io/github/stars/William-De71/HomeLAB-Compose?style=flat)](https://github.com/William-De71/HomeLAB-Compose/stargazers)
+
+[Utilisation](#utilisation) ·
+[Services](#services) ·
+[Ports](#ports) ·
+[Ajouter un service](#ajouter-un-service)
+
+</div>
+
+---
 
 ## Utilisation
 
@@ -15,47 +34,88 @@ cp .env.example .env    # adapter
 docker compose up -d
 ```
 
-Les données sont stockées dans le dossier du service (`./data`, `./config`…) ou
-dans un volume Docker nommé : voir le README de chaque service.
+- **Configuration** : tout ce qui change d'une machine à l'autre (mots de passe,
+  chemins, ports) est dans `.env`. Les variables obligatoires bloquent le
+  démarrage tant qu'elles ne sont pas renseignées.
+- **Données** : dans le dossier du service (`./data`, `./config`…) ou dans un
+  volume Docker nommé. Le README de chaque service précise quoi sauvegarder.
+- **Mises à jour** : `docker compose pull && docker compose up -d`. Chaque image
+  a sa variable `*_TAG` dans `.env` pour figer une version.
 
 ## Services
 
-| Service | Dossier | Accès | Réseau |
-|---|---|---|---|
-| Gladys Assistant | [`domotique/gladys`](domotique/gladys) | `:80` | host |
-| Home Assistant | [`domotique/home-assistant`](domotique/home-assistant) | `:8123` | host |
-| Mosquitto (seul) | [`domotique/mosquitto`](domotique/mosquitto) | `:1883` | bridge |
-| Zigbee2MQTT + Mosquitto | [`domotique/zigbee2mqtt`](domotique/zigbee2mqtt) | `:8080`, MQTT `:1883` | bridge |
-| Z-Wave JS UI + Mosquitto | [`domotique/zwave-js-ui`](domotique/zwave-js-ui) | `:8091`, WS `:3000`, MQTT `:1883` | bridge |
-| Matterbridge | [`domotique/matterbridge`](domotique/matterbridge) | `:8283` | host |
-| Node-RED | [`domotique/node-red`](domotique/node-red) | `:1880` | bridge |
-| n8n | [`domotique/n8n`](domotique/n8n) | `:5678` | bridge |
-| InfluxDB + Grafana | [`domotique/influxdb-grafana`](domotique/influxdb-grafana) | `:8086`, Grafana `:3003` | bridge |
-| Frigate | [`domotique/frigate`](domotique/frigate) | `:8971`, RTSP `:8554`, WebRTC `:8555` | bridge |
-| OpenThread Border Router | [`domotique/otbr`](domotique/otbr) | REST `:8081` | host |
-| Matter Server | [`domotique/matter-server`](domotique/matter-server) | WS `:5580` | host |
-| Nextcloud | [`cloud/nextcloud`](cloud/nextcloud) | `:8090` | bridge |
-| Sync-in | [`cloud/sync-in`](cloud/sync-in) | `:8095` | bridge |
-| Joplin Server | [`cloud/joplin`](cloud/joplin) | `:22300` | bridge |
-| Paperless-ngx | [`cloud/paperless-ngx`](cloud/paperless-ngx) | `:8000` | bridge |
-| Kopia (sauvegardes) | [`infra/kopia`](infra/kopia) | `:51515` | bridge |
-| Uptime Kuma | [`infra/uptime-kuma`](infra/uptime-kuma) | `:3004` | bridge |
-| Vaultwarden | [`infra/vaultwarden`](infra/vaultwarden) | `:8222` (HTTPS requis) | bridge |
-| AdGuard Home | [`infra/adguard-home`](infra/adguard-home) | DNS `:53`, `:3005` | bridge |
-| Homepage | [`infra/homepage`](infra/homepage) | `:3006` | bridge |
-| wg-easy (VPN WireGuard) | [`infra/wg-easy`](infra/wg-easy) | VPN UDP `:51820`, `:51821` | bridge |
-| ntfy | [`infra/ntfy`](infra/ntfy) | `:8097` | bridge |
-| Immich | [`media/immich`](media/immich) | `:2283` | bridge |
-| Jellyfin | [`media/jellyfin`](media/jellyfin) | `:8096` | bridge |
-| Mealie | [`apps/mealie`](apps/mealie) | `:9925` | bridge |
-| Actual Budget | [`apps/actual-budget`](apps/actual-budget) | `:5006` (HTTPS requis) | bridge |
-| Kalendra | [`perso/kalendra`](perso/kalendra) | `:5232` | bridge |
-| Projectory | [`perso/projectory`](perso/projectory) | `:3001` | bridge |
-| JewelBox Music Library | [`perso/jewelbox`](perso/jewelbox) | `:3002` | bridge |
+### 🏠 Domotique
+
+| | Service | Rôle | Accès | Réseau |
+|:-:|---|---|---|:-:|
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/gladys-assistant.svg" width="24" alt=""> | [Gladys Assistant](domotique/gladys) | Box domotique | `:80` | host |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/home-assistant.svg" width="24" alt=""> | [Home Assistant](domotique/home-assistant) | Box domotique | `:8123` | host |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/mosquitto.svg" width="24" alt=""> | [Mosquitto](domotique/mosquitto) | Broker MQTT seul | `:1883` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/zigbee2mqtt.svg" width="24" alt=""> | [Zigbee2MQTT](domotique/zigbee2mqtt) | Passerelle Zigbee (+ Mosquitto) | `:8080`, MQTT `:1883` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/z-wave-js-ui.svg" width="24" alt=""> | [Z-Wave JS UI](domotique/zwave-js-ui) | Passerelle Z-Wave (+ Mosquitto) | `:8091`, WS `:3000`, MQTT `:1883` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/thread.svg" width="24" alt=""> | [OpenThread Border Router](domotique/otbr) | Routeur de bordure Thread | REST `:8081` | host |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/matter.svg" width="24" alt=""> | [Matter Server](domotique/matter-server) | Contrôleur Matter | WS `:5580` | host |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/matterbridge.svg" width="24" alt=""> | [Matterbridge](domotique/matterbridge) | Expose des appareils en Matter | `:8283` | host |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/node-red.svg" width="24" alt=""> | [Node-RED](domotique/node-red) | Automatisations visuelles | `:1880` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/n8n.svg" width="24" alt=""> | [n8n](domotique/n8n) | Workflows et intégrations | `:5678` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/grafana.svg" width="24" alt=""> | [InfluxDB + Grafana](domotique/influxdb-grafana) | Historique long et tableaux de bord | `:8086`, Grafana `:3003` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/frigate.svg" width="24" alt=""> | [Frigate](domotique/frigate) | Caméras avec détection d'objets | `:8971`, RTSP `:8554`, WebRTC `:8555` | bridge |
+
+### ☁️ Cloud et documents
+
+| | Service | Rôle | Accès | Réseau |
+|:-:|---|---|---|:-:|
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/nextcloud.svg" width="24" alt=""> | [Nextcloud](cloud/nextcloud) | Fichiers, agenda, contacts | `:8090` | bridge |
+| <img src="https://github.com/Sync-in.png?size=48" width="24" alt=""> | [Sync-in](cloud/sync-in) | Fichiers, partage, synchro | `:8095` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/joplin.svg" width="24" alt=""> | [Joplin Server](cloud/joplin) | Synchro des notes Joplin | `:22300` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/paperless-ngx.svg" width="24" alt=""> | [Paperless-ngx](cloud/paperless-ngx) | Documents papier, OCR, classement | `:8000` | bridge |
+
+### 🎬 Médias
+
+| | Service | Rôle | Accès | Réseau |
+|:-:|---|---|---|:-:|
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/immich.svg" width="24" alt=""> | [Immich](media/immich) | Sauvegarde et galerie photos | `:2283` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/jellyfin.svg" width="24" alt=""> | [Jellyfin](media/jellyfin) | Films, séries, musique | `:8096` | bridge |
+
+### 🧰 Applis du quotidien
+
+| | Service | Rôle | Accès | Réseau |
+|:-:|---|---|---|:-:|
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/mealie.svg" width="24" alt=""> | [Mealie](apps/mealie) | Recettes, menus, courses | `:9925` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/actual-budget.svg" width="24" alt=""> | [Actual Budget](apps/actual-budget) | Budget personnel | `:5006` 🔒 | bridge |
+
+### 🛠️ Infrastructure
+
+| | Service | Rôle | Accès | Réseau |
+|:-:|---|---|---|:-:|
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/kopia.svg" width="24" alt=""> | [Kopia](infra/kopia) | Sauvegardes chiffrées | `:51515` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/uptime-kuma.svg" width="24" alt=""> | [Uptime Kuma](infra/uptime-kuma) | Surveillance des services | `:3004` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/ntfy.svg" width="24" alt=""> | [ntfy](infra/ntfy) | Notifications push | `:8097` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/vaultwarden.svg" width="24" alt=""> | [Vaultwarden](infra/vaultwarden) | Mots de passe (Bitwarden) | `:8222` 🔒 | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/adguard-home.svg" width="24" alt=""> | [AdGuard Home](infra/adguard-home) | DNS et blocage des pubs | DNS `:53`, `:3005` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/svg/wireguard.svg" width="24" alt=""> | [wg-easy](infra/wg-easy) | VPN WireGuard | VPN UDP `:51820`, `:51821` | bridge |
+| <img src="https://cdn.jsdelivr.net/gh/homarr-labs/dashboard-icons/png/homepage.png" width="24" alt=""> | [Homepage](infra/homepage) | Page d'accueil du homelab | `:3006` | bridge |
+
+### 👤 Projets perso
+
+| | Service | Rôle | Accès | Réseau |
+|:-:|---|---|---|:-:|
+| 📅 | [Kalendra](perso/kalendra) | [Source](https://github.com/William-De71/Kalendra) | `:5232` | bridge |
+| 📋 | [Projectory](perso/projectory) | [Source](https://github.com/William-De71/Projectory) | `:3001` | bridge |
+| 💿 | [JewelBox Music Library](perso/jewelbox) | [Source](https://github.com/William-De71/Jewelbox-Music-Library) | `:3002` | bridge |
+
+🔒 = HTTPS obligatoire : à placer derrière un reverse proxy avec certificat.
+
+## Ports
 
 Les ports par défaut ne se chevauchent pas, **sauf le 1883** : `mosquitto`,
 `zigbee2mqtt` et `zwave-js-ui` ont chacun leur broker. Sur un même hôte, n'en
 garder qu'un (voir les README de Zigbee2MQTT et Z-Wave JS UI).
+
+Les services en réseau `host` utilisent directement les ports de la machine,
+sans correspondance de ports Docker : pour en changer un, voir le README du
+service (`SERVER_PORT` dans `.env` pour Gladys, configuration de l'appli pour
+les autres).
 
 ## Ajouter un service
 
@@ -63,9 +123,15 @@ garder qu'un (voir les README de Zigbee2MQTT et Z-Wave JS UI).
 2. Mettre dans `.env.example` tout ce qui change d'une machine à l'autre, et
    l'utiliser dans le compose avec `${VARIABLE:-défaut}` ou `${VARIABLE:?message}`
    (obligatoire).
-3. Ajouter une ligne au tableau ci-dessus.
+3. Choisir un port libre (voir les tableaux ci-dessus).
+4. Ajouter une ligne dans la bonne catégorie et mettre à jour le badge
+   « services ». Icônes : [dashboard-icons](https://dashboardicons.com/).
 
 ## Historique
 
 Remplace l'ancien dépôt [HomeLAB](https://github.com/William-De71/HomeLAB)
 (scripts d'installation qui généraient les compose), archivé.
+
+## Licence
+
+[MIT](LICENSE) © William Deren
