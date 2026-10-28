@@ -17,5 +17,5 @@ docker compose exec ntfy ntfy user add --role=admin <nom>
 - Test :
   `curl -H "Authorization: Bearer <jeton>" -d "Bonjour" http://<ip-hôte>:8097/homelab`
 - Compatible avec Uptime Kuma, Home Assistant, n8n, Kopia (Notifications)…
-- Hors du réseau local, passer par wg-easy ou un reverse proxy.
+- Hors du réseau local : via le VPN wg-easy.
 - Données : `./data/lib` (comptes) et `./data/cache` (messages en attente).

@@ -13,6 +13,8 @@ mosquitto/log/
 mosquitto/config/passwd
 # Config Sync-in (contient les secrets)
 environment.yaml
+# Certificats et clés (mkcert)
+ssl/
 # … sauf les configs Mosquitto versionnées
 !domotique/mosquitto/config/
 !domotique/mosquitto/config/mosquitto.conf

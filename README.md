@@ -16,6 +16,7 @@ Un dossier = un service autonome : `compose.yaml` + `.env.example` + `README.md`
 [Utilisation](#utilisation) ·
 [Services](#services) ·
 [Ports](#ports) ·
+[HTTPS](docs/https-local.md) ·
 [Ajouter un service](#ajouter-un-service)
 
 </div>
@@ -104,7 +105,11 @@ docker compose up -d
 | 📋 | [Projectory](perso/projectory) | [Source](https://github.com/William-De71/Projectory) | `:3001` | bridge |
 | 💿 | [JewelBox Music Library](perso/jewelbox) | [Source](https://github.com/William-De71/Jewelbox-Music-Library) | `:3002` | bridge |
 
-🔒 = HTTPS obligatoire : à placer derrière un reverse proxy avec certificat.
+🔒 = HTTPS obligatoire, servi par le service lui-même avec un certificat local :
+voir [HTTPS en local avec mkcert](docs/https-local.md).
+
+Tout reste sur le réseau local ; depuis l'extérieur, l'accès passe par le VPN
+[wg-easy](infra/wg-easy).
 
 ## Ports
 

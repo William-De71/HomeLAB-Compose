@@ -7,9 +7,13 @@ services:
       - "${VAULTWARDEN_PORT:-8222}:80"
     volumes:
       - ./data:/data
+      # cert.pem + key.pem générés avec mkcert (docs/https-local.md)
+      - ./ssl:/ssl:ro
     environment:
       TZ: ${TZ:-Europe/Paris}
-      # URL HTTPS publique, obligatoire pour l'interface web et les clients
+      # HTTPS servi directement par Vaultwarden, sans reverse proxy
+      ROCKET_TLS: '{certs="/ssl/cert.pem",key="/ssl/key.pem"}'
+      # Adresse HTTPS d'accès, avec le port
       DOMAIN: ${DOMAIN:?definissez DOMAIN dans .env}
       SIGNUPS_ALLOWED: ${SIGNUPS_ALLOWED:-true}
       # Page /admin désactivée si vide

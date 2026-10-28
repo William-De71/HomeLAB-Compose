@@ -7,5 +7,9 @@ services:
       - "${ACTUAL_PORT:-5006}:5006"
     volumes:
       - ./data:/data
+      # Active HTTPS (chemins des certificats ci-dessous)
+      - ./config.json:/data/config.json:ro
+      # cert.pem + key.pem générés avec mkcert (docs/https-local.md)
+      - ./ssl:/ssl:ro
     environment:
       TZ: ${TZ:-Europe/Paris}
