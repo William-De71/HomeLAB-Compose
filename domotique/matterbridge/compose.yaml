@@ -1,0 +1,11 @@
+services:
+  matterbridge:
+    image: luligu/matterbridge:${MATTERBRIDGE_TAG:-latest}
+    container_name: matterbridge
+    restart: unless-stopped
+    network_mode: host  # Matter a besoin du multicast IPv6
+    volumes:
+      - ./matterbridge-data/plugins:/root/Matterbridge
+      - ./matterbridge-data/storage:/root/.matterbridge
+    environment:
+      TZ: ${TZ:-Europe/Paris}

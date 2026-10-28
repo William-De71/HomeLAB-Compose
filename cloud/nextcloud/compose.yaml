@@ -1,0 +1,51 @@
+services:
+  nextcloud:
+    image: nextcloud:${NEXTCLOUD_TAG:-apache}
+    container_name: nextcloud
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "${NEXTCLOUD_PORT:-8090}:80"
+    volumes:
+      - ./data/html:/var/www/html
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      MYSQL_HOST: db
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
+      REDIS_HOST: redis
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER:-admin}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD:?definissez NEXTCLOUD_ADMIN_PASSWORD dans .env}
+      NEXTCLOUD_TRUSTED_DOMAINS: ${NEXTCLOUD_TRUSTED_DOMAINS:-localhost}
+
+  # Tâches de fond (mode « Cron » dans Paramètres → Paramètres de base)
+  cron:
+    image: nextcloud:${NEXTCLOUD_TAG:-apache}
+    container_name: nextcloud-cron
+    restart: unless-stopped
+    depends_on:
+      - nextcloud
+    entrypoint: /cron.sh
+    volumes:
+      - ./data/html:/var/www/html
+
+  db:
+    image: mariadb:${MARIADB_TAG:-11.4}
+    container_name: nextcloud-db
+    restart: unless-stopped
+    command: --transaction-isolation=READ-COMMITTED
+    volumes:
+      - ./data/db:/var/lib/mysql
+    environment:
+      MARIADB_DATABASE: nextcloud
+      MARIADB_USER: nextcloud
+      MARIADB_PASSWORD: ${DB_PASSWORD:?definissez DB_PASSWORD dans .env}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?definissez DB_ROOT_PASSWORD dans .env}
+
+  redis:
+    image: redis:${REDIS_TAG:-7-alpine}
+    container_name: nextcloud-redis
+    restart: unless-stopped

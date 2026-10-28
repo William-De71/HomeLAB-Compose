@@ -1,0 +1,19 @@
+services:
+  otbr:
+    image: openthread/border-router:${OTBR_TAG:-latest}
+    container_name: otbr
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+    devices:
+      # Dongle Thread en firmware RCP
+      - ${OTBR_DEVICE:?definissez OTBR_DEVICE dans .env}:/dev/ttyACM0
+      - /dev/net/tun
+    volumes:
+      - ./data:/data
+    environment:
+      OT_RCP_DEVICE: spinel+hdlc+uart:///dev/ttyACM0?uart-baudrate=${OTBR_BAUDRATE:-1000000}
+      OT_INFRA_IF: ${OTBR_INFRA_IF:?definissez OTBR_INFRA_IF dans .env}
+      OT_THREAD_IF: wpan0
+      OT_LOG_LEVEL: ${OTBR_LOG_LEVEL:-7}

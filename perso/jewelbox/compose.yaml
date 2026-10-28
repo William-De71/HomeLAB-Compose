@@ -1,0 +1,54 @@
+# Source : https://github.com/William-De71/Jewelbox-Music-Library
+services:
+  jewelbox:
+    image: willde71/jewelbox-music-library:${JEWELBOX_TAG:-latest}
+    container_name: jewelbox-app
+    ports:
+      # 3002 côté hôte par défaut : 3001 est déjà pris par Projectory.
+      - "${JEWELBOX_PORT:-3002}:3001"
+    volumes:
+      - jewelbox_data:/app/server/data
+      # Music library (read-only) for the built-in audio player.
+      # Set MUSIC_DIR in .env, then "/music" as the library path in Settings.
+      - ${MUSIC_DIR:-./music}:/music:ro
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      # mDNS discovery: multicast does not cross the default bridge NAT, so the
+      # advertisement would be invisible from the LAN. Switch this to "true"
+      # only together with network_mode: host (and drop the ports section).
+      MDNS_ENABLED: ${MDNS_ENABLED:-false}
+      # Optional: use your own Last.fm application instead of the built-in key
+      LASTFM_API_KEY: ${LASTFM_API_KEY:-}
+      LASTFM_API_SECRET: ${LASTFM_API_SECRET:-}
+      # "Update now" button: JewelBox asks Watchtower to pull and recreate it.
+      IMAGE_TAG: ${JEWELBOX_TAG:-latest}
+      UPDATER_URL: ${UPDATER_URL:-http://watchtower:8080}
+      UPDATER_TOKEN: ${WATCHTOWER_TOKEN:-}
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # Optional, enabled by COMPOSE_PROFILES=updater in .env. Only acts when asked
+  # through its API (no periodic polling), and only on labelled containers.
+  watchtower:
+    image: nickfedor/watchtower:1.23
+    container_name: jewelbox-watchtower
+    profiles: [updater]
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      WATCHTOWER_HTTP_API_ENDPOINTS: update
+      WATCHTOWER_HTTP_API_TOKEN: ${WATCHTOWER_TOKEN:-}
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_CLEANUP: "true"
+    restart: unless-stopped
+
+volumes:
+  jewelbox_data:

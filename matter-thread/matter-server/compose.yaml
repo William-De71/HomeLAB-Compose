@@ -1,0 +1,13 @@
+services:
+  matter-server:
+    image: ghcr.io/home-assistant-libs/python-matter-server:${MATTER_TAG:-stable}
+    container_name: matter-server
+    restart: unless-stopped
+    network_mode: host  # multicast IPv6 obligatoire pour Matter
+    security_opt:
+      # Nécessaire pour le Bluetooth (mise en service des appareils)
+      - apparmor:unconfined
+    volumes:
+      - ./data:/data
+      - /run/dbus:/run/dbus:ro
+    command: --storage-path /data --paa-root-cert-dir /data/credentials

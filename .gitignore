@@ -1,0 +1,26 @@
+# Secrets propres à chaque machine
+.env
+!.env.example
+
+# Données persistantes des conteneurs (bind mounts relatifs)
+data/
+config/
+store/
+log/
+matterbridge-data/
+mosquitto/data/
+mosquitto/log/
+mosquitto/config/passwd
+# … sauf les configs Mosquitto versionnées
+!domotique/mosquitto/config/
+!domotique/mosquitto/config/mosquitto.conf
+
+docker-compose.override.yml
+compose.override.yaml
+
+.DS_Store
+*~
+*.swp
+.idea/
+.vscode/
+.claude/

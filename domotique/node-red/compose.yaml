@@ -1,0 +1,16 @@
+services:
+  node-red:
+    image: nodered/node-red:${NODERED_TAG:-latest}
+    container_name: node-red
+    restart: unless-stopped
+    ports:
+      - "${NODERED_PORT:-1880}:1880"
+    volumes:
+      # Volume nommé : l'image tourne en uid 1000 et n'écrirait pas dans un
+      # dossier créé par Docker en root.
+      - node-red-data:/data
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+
+volumes:
+  node-red-data:

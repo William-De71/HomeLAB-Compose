@@ -1,0 +1,35 @@
+services:
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:${Z2M_TAG:-latest}
+    container_name: zigbee2mqtt
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    ports:
+      - "${Z2M_PORT:-8080}:8080"
+    volumes:
+      - ./data:/app/data
+      - /run/udev:/run/udev:ro
+    devices:
+      # Clé Zigbee : préférer le chemin stable /dev/serial/by-id/…
+      - ${ZIGBEE_DEVICE:?definissez ZIGBEE_DEVICE dans .env}:/dev/zigbee
+    environment:
+      TZ: ${TZ:-Europe/Paris}
+      ZIGBEE2MQTT_CONFIG_SERIAL_PORT: /dev/zigbee
+      ZIGBEE2MQTT_CONFIG_MQTT_SERVER: mqtt://mosquitto:1883
+      ZIGBEE2MQTT_CONFIG_FRONTEND_ENABLED: "true"
+      ZIGBEE2MQTT_CONFIG_FRONTEND_PORT: "8080"
+
+  # Broker dédié à cette stack. Pour utiliser un broker existant : supprimer ce
+  # service, le depends_on, et pointer ZIGBEE2MQTT_CONFIG_MQTT_SERVER dessus.
+  mosquitto:
+    image: eclipse-mosquitto:${MOSQUITTO_TAG:-2}
+    container_name: zigbee2mqtt-mosquitto
+    restart: unless-stopped
+    ports:
+      - "${MQTT_PORT:-1883}:1883"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/data:/mosquitto/data
+    environment:
+      TZ: ${TZ:-Europe/Paris}
